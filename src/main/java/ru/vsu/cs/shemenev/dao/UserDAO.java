@@ -1,40 +1,46 @@
 package ru.vsu.cs.shemenev.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.vsu.cs.shemenev.models.User;
-import ru.vsu.cs.shemenev.utils.Security;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class UserDAO {
-    private static int countID = 0;
-    private List<User> users;
+    private final JdbcTemplate jdbcTemplate;
 
-    {
-        users = new ArrayList<>();
+    @Autowired
+    public UserDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<User> getUsers() {
-        return users;
+        String sqlCommand = "select * from users";
+        return jdbcTemplate.query(sqlCommand, new BeanPropertyRowMapper<>(User.class));
     }
 
-    public boolean isExist(User user) {
-        for (User person : users) {
-            if (user.getPassword().equals(person.getPassword())) {
-                return true;
-            }
-        }
-        return false;
+    public User isExistPassword(User user) {
+        String sqlCommand = "select * from users where password=md5(?)";
+        return jdbcTemplate.query(sqlCommand, new Object[]{user.getPassword()}, new BeanPropertyRowMapper<>(User.class))
+                .stream()
+                .findAny()
+                .orElse(null);
+    }
+
+    public User isExistHandle(User user) {
+        String sqlCommand = "select * from users where handle=?";
+        return jdbcTemplate.query(sqlCommand, new Object[]{user.getHandle()}, new BeanPropertyRowMapper<>(User.class))
+                .stream()
+                .findAny()
+                .orElse(null);
     }
 
 
     public void adduser(User user) {
-        countID++;
-        user.setId(countID);
-        user.setPassword(Security.hashPassword(user.getPassword()));
-        users.add(user);
-        System.out.println(user.getPassword());
+        String sqlCommand = "insert into users(handle, password) values(?,md5(?))";
+        jdbcTemplate.update(sqlCommand, user.getHandle(), user.getPassword());
     }
 }

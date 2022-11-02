@@ -9,17 +9,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.vsu.cs.shemenev.dao.UserDAO;
 import ru.vsu.cs.shemenev.models.User;
+import ru.vsu.cs.shemenev.utils.Action;
+import ru.vsu.cs.shemenev.utils.UserValidator;
 
 import javax.validation.Valid;
 
 @Controller
 public class IndexController {
     private final UserDAO userDAO;
+    private final UserValidator userValidator;
     private boolean isSignIn = false;
 
     @Autowired
-    public IndexController(UserDAO users) {
+    public IndexController(UserDAO users, UserValidator userValidator) {
         this.userDAO = users;
+        this.userValidator = userValidator;
     }
 
     @GetMapping("/")
@@ -48,10 +52,9 @@ public class IndexController {
 
     @PostMapping(value = "/menu", params = {"register"})
     public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+        userValidator.setAction(Action.REGISTER);
+        userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "authorization";
-        }
-        if (userDAO.isExist(user)) {
             return "authorization";
         }
         userDAO.adduser(user);
@@ -61,10 +64,9 @@ public class IndexController {
 
     @PostMapping(value = "/menu", params = {"login"})
     public String signIn(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+        userValidator.setAction(Action.LOGIN);
+        userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "authorization";
-        }
-        if (!userDAO.isExist(user)) {
             return "authorization";
         }
         isSignIn = true;
