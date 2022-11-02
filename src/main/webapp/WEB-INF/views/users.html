@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+<body>
+<h1>Users:</h1>
+<div th:each="user : ${users}">
+    <p th:text="${'Name: '+user.getHandle()}">user</p>
+</div>
+<a href="/">Sign Out</a>
+</body>
+</html>
