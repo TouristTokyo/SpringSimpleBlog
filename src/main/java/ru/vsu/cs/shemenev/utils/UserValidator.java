@@ -39,12 +39,14 @@ public class UserValidator implements Validator {
         } else if (action == Action.LOGIN) {
             if (userDAO.getUserOnHandle(user.getHandle()) == null) {
                 errors.rejectValue("handle", "", "User with this handle does not exists");
+                return;
             }
-            User userFind = userDAO.getUserOnPassword(user.getPassword());
-            if (userFind == null) {
-                errors.rejectValue("password", "", "User with this password does not exist");
-            } else if (!userFind.getHandle().equals(user.getHandle())) {
-                errors.rejectValue("password", "", "Invalid handle or password");
+            if (userDAO.getUserOnPassword(user.getPassword()) == null) {
+                errors.rejectValue("password", "", "Invalid password");
+            }
+        } else if (action == Action.EDIT) {
+            if (userDAO.getUserOnHandle(user.getHandle()) != null) {
+                errors.rejectValue("handle", "", "Use a new and unique handle");
             }
         }
     }

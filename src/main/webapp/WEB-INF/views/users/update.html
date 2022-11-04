@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/users/{id}(id=${user.getId()})}" th:object="${user}">
+    <label for="handle">Edit Handle</label>
+    <input type="text" th:field="*{handle}" id="handle">
+    <div style="color: red" th:if="${#fields.hasErrors('handle')}" th:errors="*{handle}">Error</div>
+    <br>
+    <input type="submit" value="Edit">
+</form>
+<a th:href="@{/users/{id}(id=${user.getId()})}" th:object="${user}">Back</a>
+</body>
+</html>

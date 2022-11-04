@@ -71,4 +71,14 @@ public class UserDAO {
     public User getCurrentUser() {
         return currentUser;
     }
+
+    public void editHandle(User user, int id) {
+        String sqlCommand = "update users set handle=? where user_id=?";
+        jdbcTemplate.update(sqlCommand, user.getHandle(), id);
+    }
+
+    public void deleteUser(int id) {
+        String sqlCommand = "delete from users where user_id=?";
+        jdbcTemplate.update(sqlCommand, id);
+    }
 }

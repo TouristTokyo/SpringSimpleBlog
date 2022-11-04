@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+<body>
+<p th:text="${'Handle: ' + user.getHandle()}">Handle</p>
+<br>
+<h3>Posts: </h3>
+<hr>
+<div th:if="${user.getId()==currentUser.getId()}">
+    <a th:href="@{/users/{id}/edit(id=${user.getId()})}">Edit Handle</a>
+    <br>
+    <br>
+    <form th:method="DELETE" th:action="@{/users/{id}(id=${user.getId()})}">
+        <input type="submit" value="Delete account">
+    </form>
+</div>
+<a th:href="@{/users}">Menu</a>
+<br>
+<a href="/">Sign Out</a>
+</body>
+</html>

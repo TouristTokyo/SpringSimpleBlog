@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.shemenev.dao.UserDAO;
 import ru.vsu.cs.shemenev.models.User;
 import ru.vsu.cs.shemenev.utils.Action;
@@ -42,12 +39,12 @@ public class IndexController {
     }
 
     @GetMapping("/users")
-    public String userShow(Model model) {
+    public String usersShow(Model model) {
         if (!userDAO.isLogin()) {
-            return index(model);
+            return "redirect:/";
         }
         model.addAttribute("users", userDAO.getUsers());
-        return "users";
+        return "users/usersAll";
     }
 
     @PostMapping(value = "/menu", params = {"register"})
@@ -76,7 +73,7 @@ public class IndexController {
     @GetMapping("/users/{id}")
     public String showUser(@PathVariable("id") int id, Model model) {
         if (!userDAO.isLogin()) {
-            return index(model);
+            return "redirect:/";
         }
         User user = userDAO.getUserOnId(id);
         if (user == null) {
@@ -84,6 +81,34 @@ public class IndexController {
         }
         model.addAttribute("user", user);
         model.addAttribute("currentUser", userDAO.getCurrentUser());
-        return "showUser";
+        return "users/showUser";
+    }
+
+    @GetMapping("/users/{id}/edit")
+    public String editHandleForUser(Model model, @PathVariable("id") int id) {
+        if (!userDAO.isLogin()) {
+            return "redirect:/";
+        }
+        model.addAttribute("user", userDAO.getUserOnId(id));
+        return "users/update";
+    }
+
+    @PatchMapping("/users/{id}")
+    public String editHandleForUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
+                                    @PathVariable("id") int id) {
+        userValidator.setAction(Action.EDIT);
+        userValidator.validate(user, bindingResult);
+        if (bindingResult.hasFieldErrors("handle")) {
+            return "users/update";
+        }
+        userDAO.editHandle(user, id);
+        return "redirect:/users/" + id;
+    }
+
+    @DeleteMapping("/users/{id}")
+    public String deleteUser(@PathVariable("id") int id) {
+        userDAO.deleteUser(id);
+        userDAO.signOut();
+        return "redirect:/";
     }
 }
