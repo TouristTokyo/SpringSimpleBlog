@@ -1,7 +1,6 @@
 package ru.vsu.cs.shemenev.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.vsu.cs.shemenev.models.User;
@@ -11,6 +10,8 @@ import java.util.List;
 @Component
 public class UserDAO {
     private final JdbcTemplate jdbcTemplate;
+    private boolean isLogin = false;
+    private User currentUser;
 
     @Autowired
     public UserDAO(JdbcTemplate jdbcTemplate) {
@@ -19,20 +20,20 @@ public class UserDAO {
 
     public List<User> getUsers() {
         String sqlCommand = "select * from users";
-        return jdbcTemplate.query(sqlCommand, new BeanPropertyRowMapper<>(User.class));
+        return jdbcTemplate.query(sqlCommand, new UserMapper());
     }
 
-    public User isExistPassword(User user) {
+    public User getUserOnPassword(String password) {
         String sqlCommand = "select * from users where password=md5(?)";
-        return jdbcTemplate.query(sqlCommand, new Object[]{user.getPassword()}, new BeanPropertyRowMapper<>(User.class))
+        return jdbcTemplate.query(sqlCommand, new Object[]{password}, new UserMapper())
                 .stream()
                 .findAny()
                 .orElse(null);
     }
 
-    public User isExistHandle(User user) {
+    public User getUserOnHandle(String handle) {
         String sqlCommand = "select * from users where handle=?";
-        return jdbcTemplate.query(sqlCommand, new Object[]{user.getHandle()}, new BeanPropertyRowMapper<>(User.class))
+        return jdbcTemplate.query(sqlCommand, new Object[]{handle}, new UserMapper())
                 .stream()
                 .findAny()
                 .orElse(null);
@@ -42,5 +43,32 @@ public class UserDAO {
     public void adduser(User user) {
         String sqlCommand = "insert into users(handle, password) values(?,md5(?))";
         jdbcTemplate.update(sqlCommand, user.getHandle(), user.getPassword());
+    }
+
+    public User getUserOnId(int id) {
+        String sqlCommand = "select * from users where user_id=?";
+        return jdbcTemplate.query(sqlCommand, new Object[]{id}, new UserMapper())
+                .stream()
+                .findAny()
+                .orElse(null);
+    }
+
+    public boolean isLogin() {
+        return isLogin;
+    }
+
+    public void signIn(String handle) {
+        assert currentUser == null;
+        currentUser = getUserOnHandle(handle);
+        isLogin = true;
+    }
+
+    public void signOut() {
+        currentUser = null;
+        isLogin = false;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
     }
 }

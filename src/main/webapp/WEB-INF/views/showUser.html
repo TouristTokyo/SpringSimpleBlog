@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+<body>
+<p th:text="${'Handle: ' + user.getHandle()}">Handle</p>
+<br>
+<div>
+    <p th:if="${user.getId()==currentUser.getId()}">Edit</p>
+    <p th:if="${user.getId()==currentUser.getId()}">Delete</p>
+</div>
+</body>
+</html>

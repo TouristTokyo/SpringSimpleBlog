@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.vsu.cs.shemenev.dao.UserDAO;
 import ru.vsu.cs.shemenev.models.User;
@@ -18,7 +19,6 @@ import javax.validation.Valid;
 public class IndexController {
     private final UserDAO userDAO;
     private final UserValidator userValidator;
-    private boolean isSignIn = false;
 
     @Autowired
     public IndexController(UserDAO users, UserValidator userValidator) {
@@ -28,14 +28,14 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(Model model) {
-        isSignIn = false;
+        userDAO.signOut();
         model.addAttribute("user", new User());
         return "authorization";
     }
 
     @GetMapping("/menu")
     public String menu() {
-        if (!isSignIn) {
+        if (!userDAO.isLogin()) {
             return "authorization";
         }
         return "menu";
@@ -43,8 +43,8 @@ public class IndexController {
 
     @GetMapping("/users")
     public String userShow(Model model) {
-        if (!isSignIn) {
-            return "authorization";
+        if (!userDAO.isLogin()) {
+            return index(model);
         }
         model.addAttribute("users", userDAO.getUsers());
         return "users";
@@ -58,7 +58,7 @@ public class IndexController {
             return "authorization";
         }
         userDAO.adduser(user);
-        isSignIn = true;
+        userDAO.signIn(user.getHandle());
         return "redirect:/menu";
     }
 
@@ -69,7 +69,21 @@ public class IndexController {
         if (bindingResult.hasErrors()) {
             return "authorization";
         }
-        isSignIn = true;
+        userDAO.signIn(user.getHandle());
         return "redirect:/menu";
+    }
+
+    @GetMapping("/users/{id}")
+    public String showUser(@PathVariable("id") int id, Model model) {
+        if (!userDAO.isLogin()) {
+            return index(model);
+        }
+        User user = userDAO.getUserOnId(id);
+        if (user == null) {
+            System.out.println("NOT FOUND");
+        }
+        model.addAttribute("user", user);
+        model.addAttribute("currentUser", userDAO.getCurrentUser());
+        return "showUser";
     }
 }

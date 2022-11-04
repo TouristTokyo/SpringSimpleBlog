@@ -30,17 +30,17 @@ public class UserValidator implements Validator {
     public void validate(Object target, Errors errors) {
         User user = (User) target;
         if (action == Action.REGISTER) {
-            if (userDAO.isExistHandle(user) != null) {
+            if (userDAO.getUserOnHandle(user.getHandle()) != null) {
                 errors.rejectValue("handle", "", "User with this handle already exists");
             }
-            if (userDAO.isExistPassword(user) != null) {
+            if (userDAO.getUserOnPassword(user.getPassword()) != null) {
                 errors.rejectValue("password", "", "User with this password already exist");
             }
         } else if (action == Action.LOGIN) {
-            if (userDAO.isExistHandle(user) == null) {
+            if (userDAO.getUserOnHandle(user.getHandle()) == null) {
                 errors.rejectValue("handle", "", "User with this handle does not exists");
             }
-            User userFind = userDAO.isExistPassword(user);
+            User userFind = userDAO.getUserOnPassword(user.getPassword());
             if (userFind == null) {
                 errors.rejectValue("password", "", "User with this password does not exist");
             } else if (!userFind.getHandle().equals(user.getHandle())) {
