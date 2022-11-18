@@ -1,4 +1,4 @@
-package ru.vsu.cs.shemenev.dao;
+package ru.vsu.cs.shemenev.dao.mappers;
 
 import org.springframework.jdbc.core.RowMapper;
 import ru.vsu.cs.shemenev.models.User;

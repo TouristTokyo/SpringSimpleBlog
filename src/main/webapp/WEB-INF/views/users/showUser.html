@@ -8,16 +8,28 @@
 <p th:text="${'Handle: ' + user.getHandle()}">Handle</p>
 <br>
 <h3>Posts: </h3>
+<div th:each="post : ${posts}">
+    <a th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${'Title: ' + post.getTitle}">post</a>
+    <br>
+</div>
 <hr>
 <div th:if="${user.getId()==currentUser.getId()}">
     <a th:href="@{/users/{id}/edit(id=${user.getId()})}">Edit Handle</a>
+    <br>
+    <br>
+    <a th:href="@{/posts/new}">Create post</a>
     <br>
     <br>
     <form th:method="DELETE" th:action="@{/users/{id}(id=${user.getId()})}">
         <input type="submit" value="Delete account">
     </form>
 </div>
-<a th:href="@{/users}">Menu</a>
+<br>
+<br>
+<a th:href="@{/users}">All users</a>
+<br>
+<a th:href="@{/menu}">Menu</a>
+<br>
 <br>
 <a href="/">Sign Out</a>
 </body>

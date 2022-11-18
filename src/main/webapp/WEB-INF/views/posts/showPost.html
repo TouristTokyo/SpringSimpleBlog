@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+</head>
+<body>
+<h3 th:text="${'Title: ' + post.getTitle()}">title</h3>
+<div th:if="${post.getImagePath()!=null}">
+    <img th:src="@{/img/{filename}(filename=${post.getImagePath()})}" width="30%" height="10%">
+</div>
+<h3>Body:
+    <br>
+    <textarea style="resize: none" th:text="${post.getBody()}" disabled="false">body</textarea>
+</h3>
+<h3 th:text="${'Tag: ' + tag.getTagWorld()}">tag</h3>
+<h3> <a th:href="@{/users/{id}(id=${author.getId()})}" th:text="${'Author: ' + author.getHandle()}">author</a></h3>
+<br>
+<div th:if="${author.getId()==currentUser.getId()}">
+    <form th:method="DELETE" th:action="@{/posts/{id}(id=${post.getId()})}">
+        <input type="submit" value="Delete post">
+    </form>
+</div>
+<br>
+<a th:href="@{/posts}">Back</a>
+</body>
+</html>

@@ -38,15 +38,6 @@ public class IndexController {
         return "menu";
     }
 
-    @GetMapping("/users")
-    public String usersShow(Model model) {
-        if (!userDAO.isLogin()) {
-            return "redirect:/";
-        }
-        model.addAttribute("users", userDAO.getUsers());
-        return "users/usersAll";
-    }
-
     @PostMapping(value = "/menu", params = {"register"})
     public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         userValidator.setAction(Action.REGISTER);
@@ -70,45 +61,8 @@ public class IndexController {
         return "redirect:/menu";
     }
 
-    @GetMapping("/users/{id}")
-    public String showUser(@PathVariable("id") int id, Model model) {
-        if (!userDAO.isLogin()) {
-            return "redirect:/";
-        }
-        User user = userDAO.getUserOnId(id);
-        if (user == null) {
-            System.out.println("NOT FOUND");
-        }
-        model.addAttribute("user", user);
-        model.addAttribute("currentUser", userDAO.getCurrentUser());
-        return "users/showUser";
-    }
-
-    @GetMapping("/users/{id}/edit")
-    public String editHandleForUser(Model model, @PathVariable("id") int id) {
-        if (!userDAO.isLogin()) {
-            return "redirect:/";
-        }
-        model.addAttribute("user", userDAO.getUserOnId(id));
-        return "users/update";
-    }
-
-    @PatchMapping("/users/{id}")
-    public String editHandleForUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
-                                    @PathVariable("id") int id) {
-        userValidator.setAction(Action.EDIT);
-        userValidator.validate(user, bindingResult);
-        if (bindingResult.hasFieldErrors("handle")) {
-            return "users/update";
-        }
-        userDAO.editHandle(user, id);
-        return "redirect:/users/" + id;
-    }
-
-    @DeleteMapping("/users/{id}")
-    public String deleteUser(@PathVariable("id") int id) {
-        userDAO.deleteUser(id);
-        userDAO.signOut();
-        return "redirect:/";
+    @GetMapping("/hello")
+    public String hello(Model model){
+        return "test";
     }
 }

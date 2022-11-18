@@ -3,6 +3,9 @@ package ru.vsu.cs.shemenev.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.vsu.cs.shemenev.dao.mappers.PostMapper;
+import ru.vsu.cs.shemenev.dao.mappers.UserMapper;
+import ru.vsu.cs.shemenev.models.Post;
 import ru.vsu.cs.shemenev.models.User;
 
 import java.util.List;
@@ -80,5 +83,10 @@ public class UserDAO {
     public void deleteUser(int id) {
         String sqlCommand = "delete from users where user_id=?";
         jdbcTemplate.update(sqlCommand, id);
+    }
+
+    public List<Post> getUserPosts(int id){
+        String sqlCommand = "select * from posts where user_id = ?";
+        return jdbcTemplate.query(sqlCommand, new Object[]{id}, new PostMapper());
     }
 }

@@ -9,5 +9,7 @@
 <div th:each="user : ${users}">
     <a th:href="@{/users/{id}(id=${user.getId()})}" th:text="${user.getHandle()}">user</a>
 </div>
+<br>
+<a th:href="@{/menu}">Menu</a>
 </body>
 </html>
