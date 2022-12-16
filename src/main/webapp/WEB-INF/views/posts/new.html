@@ -2,27 +2,47 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <title>Create post</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/posts/upload}" enctype="multipart/form-data">
-    <label for="title">Title</label>
-    <input type="text" th:field="*{post.title}" id="title">
-    <div style="color: red" th:if="${#fields.hasErrors('post.title')}" th:errors="*{post.title}">Title error</div>
-    <br>
-    <label for="body">Text</label>
-    <p><textarea rows="5" cols="25" th:field="*{post.body}" id="body"></textarea></p>
-    <div style="color: red" th:if="${#fields.hasErrors('post.body')}" th:errors="*{post.body}">Body error</div>
-    <br>
-    <label for="image">Image</label>
-    <input type="file"  accept=".png, .jpeg, .jpg" name="image" id="image">
-    <br>
-    <label for="tag">Tag</label>
-    <input type="text" th:field="*{tag.tagWorld}" id="tag">
-    <br>
-    <div style="color: red" th:if="${#fields.hasErrors('tag.tagWorld')}" th:errors="*{tag.tagWorld}">Tag error</div>
-    <br>
-    <input type="submit" value="create">
-</form>
+<div class="container">
+    <div class="card mt-5">
+        <div class="card-body">
+            <form th:method="POST" th:action="@{/posts/upload}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input class="form-control" type="text" th:field="*{post.title}" id="title">
+                    <div style="color: red" th:if="${#fields.hasErrors('post.title')}" th:errors="*{post.title}">Title
+                        error
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="body">Text</label>
+                    <p><textarea class="form-control" style="resize: none" rows="5" cols="25" th:field="*{post.body}" id="body" ></textarea>
+                    </p>
+                    <div style="color: red" th:if="${#fields.hasErrors('post.body')}" th:errors="*{post.body}">Body
+                        error
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image</label>
+                    <input class="form-control" type="file" accept=".png, .jpeg, .jpg" name="image" id="image">
+                </div>
+                <div class="form-group">
+                    <label for="tag">Tag</label>
+                    <input class="form-control" type="text" th:field="*{tag.tagWorld}" id="tag">
+                    <div style="color: red" th:if="${#fields.hasErrors('tag.tagWorld')}" th:errors="*{tag.tagWorld}">Tag
+                        error
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input class="btn btn-info" type="submit" value="create">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

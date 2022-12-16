@@ -2,20 +2,36 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <title>Register</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/menu}" th:object="${user}">
-    <label for="name">Handle</label>
-    <input type="text" th:field="*{handle}" id="name">
-    <div style="color: red" th:if="${#fields.hasErrors('handle')}" th:errors="*{handle}">Handle error</div>
-    <br>
-    <label for="password">Password</label>
-    <input type="password" th:field="*{password}" id=password>
-    <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
-    <br>
-    <input type="submit" name="login" value="Sign In">
-    <input type="submit" name="register" value="Create">
-</form>
+<div class="container">
+    <div class="card mt-5">
+        <div class="card-body">
+            <form th:method="POST" th:action="@{/menu}" th:object="${user}">
+                <div class="form-group">
+                    <label for="name">Handle</label>
+                    <input class="form-control" type="text" th:field="*{handle}" id="name">
+                    <div style="color: red" th:if="${#fields.hasErrors('handle')}" th:errors="*{handle}">Handle error
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input class="form-control" type="password" th:field="*{password}" id=password>
+                    <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password
+                        error
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input class="btn btn-info" type="submit" name="login" value="Sign In">
+                    <input class="btn btn-info" type="submit" name="register" value="Create">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

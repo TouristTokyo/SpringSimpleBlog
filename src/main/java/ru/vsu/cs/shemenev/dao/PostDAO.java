@@ -81,7 +81,7 @@ public class PostDAO {
 
     private boolean deleteImageLocalDirectory(int id) {
         Post post = getPostById(id);
-        if(post.getImagePath()==null){
+        if (post.getImagePath() == null) {
             return true;
         }
         File file = new File(uploadPath + "/" + post.getImagePath());

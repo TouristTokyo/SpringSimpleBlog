@@ -2,26 +2,64 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <title>Post</title>
 </head>
 <body>
-<h3 th:text="${'Title: ' + post.getTitle()}">title</h3>
-<div th:if="${post.getImagePath()!=null}">
-    <img th:src="@{/img/{filename}(filename=${post.getImagePath()})}" width="30%" height="10%">
+<div class="container">
+    <div class="card mt-5">
+        <div class="card-body">
+            <h3 th:text="${'Title: ' + post.getTitle()}">title</h3>
+            <div class="form-group" th:if="${post.getImagePath()!=null}">
+                <img th:src="@{/img/{filename}(filename=${post.getImagePath()})}" width="30%" height="10%">
+            </div>
+            <div class="form-group">
+                <h3>Body:</h3>
+                <textarea class="form-group" style="resize: none" th:text="${post.getBody()}" rows="5" cols="25"
+                          disabled="false">body</textarea>
+            </div>
+            <div class="form-group">
+                <h3 th:text="${'Tag: ' + tag.getTagWorld()}">tag</h3>
+                <h3><a th:href="@{/users/{id}(id=${author.getId()})}"
+                       th:text="${'Author: ' + author.getHandle()}">author</a></h3>
+            </div>
+            <div class="form-group">
+                <h3>Comments: </h3>
+                <div style="height:150px; width:300px; overflow:auto;">
+                    <div th:each="comment : ${comments}">
+                        <textarea rows="3" cols="30" style="resize: none;" disabled="false"
+                                  th:text="${comment.getText()}">comment</textarea>
+                        <form th:if="${comment.getUserId()==currentUser.getId() || currentUser.getId()==author.getId()}" th:method="DELETE"
+                              th:action="@{/posts/{id}/delete_comment(id=${post.getId()})}">
+                            <input type="hidden" name="comment_id" th:value="${comment.getId()}">
+                            <input class="btn btn-danger" type="submit" value="delete comment">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <form th:method="POST" th:action="@{/posts/{id}/new_comment(id=${post.getId()})}">
+                    <textarea style="resize: none" rows="3" cols="30" th:field="*{comment.text}"
+                              required
+                              title="Enter to text"></textarea>
+                    <div class="form-group">
+                        <input class="btn btn-info" style="margin-left: 120px" type="submit" value="Add comment">
+                    </div>
+                </form>
+            </div>
+            <hr>
+            <div class="form-group" th:if="${author.getId()==currentUser.getId()}">
+                <form th:method="DELETE" th:action="@{/posts/{id}(id=${post.getId()})}">
+                    <input onclick="return confirm('Do you really want to delete your post?')" class="btn btn-danger"
+                           type="submit" value="Delete post">
+                </form>
+            </div>
+            <div class="form-group">
+                <a class="btn btn-info" style="color: white;" th:href="@{/posts}">Posts</a>
+            </div>
+        </div>
+    </div>
 </div>
-<h3>Body:
-    <br>
-    <textarea style="resize: none" th:text="${post.getBody()}" disabled="false">body</textarea>
-</h3>
-<h3 th:text="${'Tag: ' + tag.getTagWorld()}">tag</h3>
-<h3> <a th:href="@{/users/{id}(id=${author.getId()})}" th:text="${'Author: ' + author.getHandle()}">author</a></h3>
-<br>
-<div th:if="${author.getId()==currentUser.getId()}">
-    <form th:method="DELETE" th:action="@{/posts/{id}(id=${post.getId()})}">
-        <input type="submit" value="Delete post">
-    </form>
-</div>
-<br>
-<a th:href="@{/posts}">Back</a>
 </body>
 </html>

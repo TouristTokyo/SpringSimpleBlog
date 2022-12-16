@@ -2,14 +2,52 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <title>Users</title>
+    <style>
+        .hide {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<h1>Users:</h1>
-<div th:each="user : ${users}">
-    <a th:href="@{/users/{id}(id=${user.getId()})}" th:text="${user.getHandle()}">user</a>
+<table style="margin-left: 15px;" class="table table-hover sampleTable">
+    <thead>
+    <tr>
+        <th scope="col">Users</th>
+    </tr>
+    </thead>
+    <tbody>
+    <div th:each="user : ${users}">
+        <tr>
+            <td>
+                <a th:href="@{/users/{id}(id=${user.getId()})}" th:text="${user.getHandle()}">user</a>
+            </td>
+        </tr>
+    </div>
+    </tbody>
+</table>
+<hr>
+<div class="form-group">
+    <a class="btn btn-info" style="color: white; margin-left: 15px;" th:href="@{/menu}">Menu</a>
+    <a class="btn btn-info" style="color: white; margin-left: 5px;" th:href="@{/users/{id}(id=${currentUser.getId()})}">My
+        account</a>
 </div>
-<br>
-<a th:href="@{/menu}">Menu</a>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery.fancytable/dist/fancyTable.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".sampleTable").fancyTable({
+            sortColumn: 0,
+            pagination: true,
+            perPage: 5,
+            globalSearch: true,
+            inputPlaceholder: 'Search user'
+        });
+    });
+</script>
 </body>
 </html>

@@ -30,6 +30,7 @@ public class UsersController {
             return "redirect:/";
         }
         model.addAttribute("users", userDAO.getUsers());
+        model.addAttribute("currentUser", userDAO.getCurrentUser());
         return "users/usersAll";
     }
 
